@@ -1,12 +1,17 @@
 package br.edu.fatec.sjc;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class NumberAscOrder<E extends Number & Comparable<E>> {
 
     private CustomStack<E> customStack;
+    private List<E> sortedList = new ArrayList<>();
+
+    public NumberAscOrder(){
+        
+    }
 
     public NumberAscOrder(CustomStack<E> customStack) {
         this.customStack = customStack;
@@ -14,8 +19,8 @@ public class NumberAscOrder<E extends Number & Comparable<E>> {
 
     public List<E> sort() throws StackEmptyException, StackFullException {
 
-         // Verifica se a pilha está vazia
-         if (customStack.isEmpty()) {
+        // Verifica se a pilha está vazia
+        if (customStack.isEmpty()) {
             throw new StackEmptyException();
         }
         
@@ -24,16 +29,15 @@ public class NumberAscOrder<E extends Number & Comparable<E>> {
             throw new StackFullException();
         }
 
-        List<E> elements = customStack.getElements();
- 
-        Collections.sort(elements, new Comparator<E>() {
-            @Override
-            public int compare(E o1, E o2) {
-                return Double.compare(o1.doubleValue(), o2.doubleValue());
-            }
-        });
+        // Adicionando elementos da pilha na lista
+        for (int i = 0; i < customStack.size(); i++){
+            E value = customStack.pop();
+            sortedList.add(value);
+        }
 
-        return elements;
+        Collections.sort(sortedList);
+
+        return sortedList;
     }
 
 }

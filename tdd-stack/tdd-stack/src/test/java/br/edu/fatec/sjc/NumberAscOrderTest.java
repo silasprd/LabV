@@ -1,15 +1,13 @@
 package br.edu.fatec.sjc;
-import org.junit.jupiter.api.Assertions;
-import org.mockito.Mockito;
 
-import static org.mockito.Mockito.doThrow;
+import org.junit.jupiter.api.Assertions;
+
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,51 +26,50 @@ public class NumberAscOrderTest {
     @Mock
     private CalculableStrategy<Double> calculableStrategy;
 
+    Integer i;
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @BeforeEach
     public void setUp() {
         numberAscOrder = new NumberAscOrder(customStack);
+        i = 0;
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSortWithSixRandomNumbers() throws StackEmptyException, StackFullException {
 
-        List<Double> randomNumbers = new ArrayList<>();
+        // Cria uma lista com 6 números aleatórios
+        List<Double> randomList = new ArrayList<>(Arrays.asList(0.7, 0.3, 0.9, 0.1, 0.5, 0.2));
 
-        // Gerando uma lista com 6 números aleatórios
-        for (int i = 0; i < 6; i++) {
-            double randomNumber = new Random().nextDouble();
-            randomNumbers.add(randomNumber);
-        }
+        // Lista ordenada para comparação
+        List<Double> sortedList = new ArrayList<Double>(randomList);
+        Collections.sort(sortedList);
 
-        // Mockando o comportamento da pilha
-        Mockito.when(customStack.getElements()).thenReturn(randomNumbers);
-        Mockito.when(customStack.size()).thenReturn(6);
+        // Mock do comportamento da pilha
+        when(customStack.size()).thenReturn(6);
+        when(customStack.isEmpty()).thenReturn(false);
+        when(customStack.pop()).thenAnswer(invocation -> {
+            if (i < randomList.size()) {
+                return randomList.get(i++);
+            } else {
+                throw new StackEmptyException();
+            }
+        });
 
-        // Obtendo a lista ordenada usando o método sort()
-        List<Double> sortedList = numberAscOrder.sort();
-
-        // Verificando se a lista ordenada é igual à lista de números inseridos ordenada
-        List<Double> originalList = new ArrayList<>(randomNumbers);
-        originalList.sort(Double::compareTo);
-
-        Assertions.assertEquals(originalList, sortedList);
-
+        // Verifica se a lista retornada está ordenada corretamente
+        Assertions.assertEquals(sortedList, numberAscOrder.sort());
     }
 
     @Test
     public void testSortWithEmptyList() throws StackEmptyException, StackFullException {
 
-        // when(customStack.getElements()).thenReturn(new ArrayList<>());
+        // Mock do compartamento de uma pilha vazia
+        when(customStack.isEmpty()).thenReturn(true);
 
-        // // Mocka o comportamento de lançamento de exceção do método sort()
-        // doThrow(StackEmptyException.class).when(numberAscOrder).sort();
+        // Verifica se uma exceção é lançada ao tentar utilizar o método sort com uma
+        // lista vazia
+        Assertions.assertThrows(StackEmptyException.class, numberAscOrder::sort);
 
-        // Assertions.assertThrows(StackEmptyException.class, () -> {
-        //     numberAscOrder.sort();
-        // });
-     
     }
 
 }
