@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class NumberAscOrderTest {
 
     @SuppressWarnings("rawtypes")
-    @Mock
     private NumberAscOrder numberAscOrder;
+    
     @Mock
     private CustomStack<Double> customStack;
 
