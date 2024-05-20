@@ -41,13 +41,4 @@ public class CustomStack<T extends  Number> {
     public int size() {
         return this.elements.size();
     }
-
-    public List<T> getElements() {
-        return elements;
-    }
-
-    public void setElements(List<T> elements) {
-        this.elements = elements;
-    }
-
 }
